@@ -37,10 +37,18 @@ class AffinePolynomialBasis(PolynomialBasis):
         """
         x_hat = self.pull_back(x)
         x_hat_eval = self.basis.evaluate_basis(x_hat)
-        x_eval = self.push_forward(x_hat_eval)
 
-        return x_eval
+        return self.push_forward(x_hat_eval)
     
+    def fit(self, x_nodes: np.ndarray, y_nodes: np.ndarray) -> np.ndarray:
+        """
+        Computes the coefficients c such that p(x_nodes) = y_nodes.
+        Returns the coefficients array.
+        """
+        x_nodes_hat = self.pull_back(x_nodes)
+        return self.push_forward(self.basis.fit(x_nodes_hat))
+
+
     def pull_back(self, x: float) -> float:
         """
         Maps $x \in [a, b] \to \hat{x} \in [\hat{a}, \hat{b}]

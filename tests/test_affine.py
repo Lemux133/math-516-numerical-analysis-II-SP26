@@ -2,22 +2,25 @@ import pytest
 import numpy as np
 from numanalysislib.basis._abstract import PolynomialBasis
 from numanalysislib.basis.affine import AffinePolynomialBasis
+from numanalysislib.basis.power import PowerBasis
 
 
 def test_vector_pull_back():
     """
     Test if the interval [-4, 5] is successfully mapped to [-1, 1]
     """
-    a_hat = -1
-    b_hat = 1
 
+    # define endpoints
     a = -4
     b = 5
 
-    Affine = AffinePolynomialBasis(hat_a = -1, hat_b = 1, a = -4, b = 5)
+    # make instance
+    basis = PowerBasis(10)
+    Affine = AffinePolynomialBasis(basis, a = a, b = b)
 
+    # verify pull back maps interval
     physical_int = np.linspace(a, b, 100)
-    reference_int = np.linspace(a_hat, b_hat, 100)
+    reference_int = np.linspace(0, 1, 100)
 
     mapped_physical_int = Affine.pull_back(physical_int)
 
@@ -27,27 +30,31 @@ def test_vector_push_forward():
     """
     Test if the interval [-1, 1] is successfully mapped to [-4, 5]
     """
-    a_hat = -1
-    b_hat = 1
-
+    # define endpoints
     a = -4
     b = 5
 
-    Affine = AffinePolynomialBasis(hat_a = -1, hat_b = 1, a = -4, b = 5)
+    # make instance
+    basis = PowerBasis(10)
+    Affine = AffinePolynomialBasis(basis, a = a, b = b)
 
+    # verify push forward maps interval
     physical_int = np.linspace(a, b, 100)
-    reference_int = np.linspace(a_hat, b_hat, 100)
+    reference_int = np.linspace(0, 1, 100)
 
     mapped_reference_int = Affine.push_forward(reference_int)
 
     np.testing.assert_allclose(mapped_reference_int, physical_int)
 
-def test_failure_hats():
+def test_failure():
     """
     Check for failure
     """
-    a_hat = 1
-    b_hat = 0
+    a = -2
+    b = -4
 
-    a = 10
-    b = 20
+    with pytest.raises(ValueError, match = "a must be greater than b"):
+        basis = PowerBasis(10)
+        Affine = AffinePolynomialBasis(basis, a = a, b = b)
+
+
