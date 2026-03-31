@@ -183,5 +183,5 @@ class ChebyshevBasis(PolynomialBasis):
             raise ValueError(
                 f"kind must be 'roots' or 'extrema', got {kind}"
             )
-
-        return nodes
+        
+        return np.sort(nodes)

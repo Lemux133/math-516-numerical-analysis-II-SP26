@@ -17,11 +17,11 @@ class TestChebyshevBasis:
 
         # T_0(x) = cos(0 * arccos(x)) = 1
         val0 = basis.evaluate_basis(0, x)
-        assert val0[0] == 1.0
+        np.testing.assert_allclose(val0[0], 1.0)
 
         # T_1(x) = cos(1 * arccos(x)) = x
         val1 = basis.evaluate_basis(1, x)
-        assert val1[0] == 0.5
+        np.testing.assert_allclose(val1[0], 0.5)
 
         # T_2(x) = cos(2 * arccos(x))
         val2 = basis.evaluate_basis(2, x)
