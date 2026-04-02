@@ -15,15 +15,15 @@ class TestChebyshevBasis:
         basis = ChebyshevBasis(degree=3)
         x = np.array([0.5])
 
-        # T_0(x) = cos(0 * arccos(x)) = 1
+        # T_0(x) = cos(0*arccos(x)) = 1
         val0 = basis.evaluate_basis(0, x)
         np.testing.assert_allclose(val0[0], 1.0)
 
-        # T_1(x) = cos(1 * arccos(x)) = x
+        # T_1(x) = cos(1*arccos(x)) = x
         val1 = basis.evaluate_basis(1, x)
         np.testing.assert_allclose(val1[0], 0.5)
 
-        # T_2(x) = cos(2 * arccos(x))
+        # T_2(x) = cos(2*arccos(x))
         val2 = basis.evaluate_basis(2, x)
         np.testing.assert_allclose(val2[0], -0.5)
 
@@ -32,9 +32,9 @@ class TestChebyshevBasis:
         basis = ChebyshevBasis(degree=2)
         x = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
 
-        # T_2(x) = cos(2 * arccos(x))
+        # T_2(x) = cos(2*arccos(x))
         y = basis.evaluate_basis(2, x)
-        expected = np.cos(2 * np.arccos(x))
+        expected = np.cos(2*np.arccos(x))
 
         np.testing.assert_allclose(y, expected, atol=1e-14)
 
@@ -69,7 +69,7 @@ class TestChebyshevBasis:
         np.testing.assert_allclose(coef, [0.0, 1.0], atol=1e-12)
 
     def test_fit_quadratic(self):
-        """Test fitting f(x) = x^2 using Chebyshev polynomials."""
+        """test fitting f(x) = x^2 using Chebyshev polynomials."""
         basis = ChebyshevBasis(degree=2)
         x = np.array([-1.0, 0.0, 1.0])
         y = x**2
