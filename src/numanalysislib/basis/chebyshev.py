@@ -29,7 +29,7 @@ class ChebyshevBasis(PolynomialBasis):
         parameters
         degree: int; maximum polynomial deg
         """
-        super().__init__(degree)
+        super().__init__(degree, a=-1.0, b=1.0)
         # for instance, if we pass degree=5 when creating a ChebyshevBasis object,
         # then the PolynomialBasis constructor would set self.degree=3, self.n_dofs=4
 
