@@ -48,6 +48,18 @@ class TestAffinePower:
 
         np.testing.assert_allclose(mapped_reference_int, physical_int)
 
+    def test_fit_evaluate(self):
+        power = PowerBasis(1)
+        a = 0.0
+        b = 0.5
+        affine = AffinePolynomialBasis(power, a, b)
+        x_vals = np.array([0.0, 0.5])
+        y_vals = np.array([0.0, 0.5])
+        coeffs = affine.fit(x_vals, y_vals)
+        pred_y_vals = affine.evaluate(coeffs, x_vals)
+        
+        np.testing.assert_allclose(pred_y_vals, y_vals, atol = 1e-12)
+
     def test_bound_order_test_failure(self):
         """
         Check for failure
