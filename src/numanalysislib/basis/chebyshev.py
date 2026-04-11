@@ -31,7 +31,7 @@ class ChebyshevBasis(PolynomialBasis):
         """
         super().__init__(degree, a=-1.0, b=1.0)
         # for instance, if we pass degree=5 when creating a ChebyshevBasis object,
-        # then the PolynomialBasis constructor would set self.degree=3, self.n_dofs=4
+        # then the PolynomialBasis constructor would set self.degree=5, self.n_dofs=6
 
     def evaluate_basis(self, ind: int, x: np.ndarray) -> np.ndarray:
         """
