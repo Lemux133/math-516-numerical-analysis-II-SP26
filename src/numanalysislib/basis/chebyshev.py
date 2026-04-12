@@ -1,8 +1,8 @@
 """
 Chebyshev polynomial basis
 
-here we implement the Chebyshev polynomials on the reference
-interval [-1, 1], where the basis is defined as T_n(x) = cos(n*arccos(x))
+Here we implement the Chebyshev polynomials on the reference interval
+[-1, 1], where the basis is defined as T_n(x) = cos(n*arccos(x))
 """
 
 import warnings # for showing warning messages
@@ -14,20 +14,20 @@ class ChebyshevBasis(PolynomialBasis):
     """
     Chebyshev polynomials on the reference interval [-1, 1]
 
-    the basis fxns T_n(x) are defined as: T_n(x) = cos(n*arccos(x)), for x in [-1, 1]
+    The basis fxns T_n(x) are defined as: T_n(x) = cos(n*arccos(x)), for x in [-1, 1]
 
-    to use on a chosen interval [a, b], need to wrap with AffinePolynomialBasis
+    To use on a chosen interval [a, b], need to wrap with AffinePolynomialBasis
 
-    parameters
-    1. degree: int; the maximum degree of the polynomial basis
+    Args:
+        degree (int): the maximum degree of the polynomial basis
     """
 
     def __init__(self, degree: int) -> None:
         """
-        initialize the Chebyshev basis on [-1, 1]
+        Initialize the Chebyshev basis on [-1, 1]
 
-        parameters
-        degree: int; maximum polynomial deg
+        Args:
+            degree (int): maximum polynomial deg
         """
         super().__init__(degree, a=-1.0, b=1.0)
         # for instance, if we pass degree=5 when creating a ChebyshevBasis object,
@@ -35,24 +35,22 @@ class ChebyshevBasis(PolynomialBasis):
 
     def evaluate_basis(self, ind: int, x: np.ndarray) -> np.ndarray:
         """
-        evaluate the i-th Chebyshev polynomial T_i(x) at points x
+        Evaluate the i-th Chebyshev polynomial T_i(x) at points x
 
-        parameters
-        1. ind: int; note that 0 <= ind <= degree
-        2. x: np.ndarray; pts at which to evaluate the basis
+        Args:
+            ind (int): note that 0 <= ind <= degree
+            x (np.ndarray): pts at which to evaluate the basis
 
-        returns
-        np.ndarray; values of T_ind(x) at each point, same shape as x
+        Returns:
+            a np.ndarray, values of T_ind(x) at each point, same shape as x
 
-        raises ValueError
-               if index is out of range for the basis degree
+        Raises ValueError:
+            if index is out of range for the basis degree
         """
         if ind < 0 or ind > self.degree:
             raise ValueError(
                 f"basis index {ind} is out of range for degree {self.degree}"
             )
-
-        x = np.asarray(x)
 
         # warning for high-degree evaluation which may be unstable
         if ind > 50:
@@ -62,22 +60,22 @@ class ChebyshevBasis(PolynomialBasis):
                 RuntimeWarning
             )
 
+        x = np.asarray(x)
         return np.cos(ind*np.arccos(x))
 
     def fit(self, x_nodes: np.ndarray, y_nodes: np.ndarray) -> np.ndarray:
         """
-        compute coefficients for Chebyshev interpolation by solving the system V*c = y, where V_ij = T_j(x_i)
+        Compute coefficients for Chebyshev interpolation by solving the system V*c = y, where V_ij = T_j(x_i)
 
-        parameters
-        1. x_nodes: np.ndarray; interpolation node coordinates w/ shape (n_dofs,)
-        2. y_nodes: np.ndarray; fxn values at the nodes w/ shape (n_dofs,)
+        Args:
+            x_nodes (np.ndarray): interpolation node coordinates w/ shape (n_dofs,)
+            y_nodes (np.ndarray): fxn values at the nodes w/ shape (n_dofs,)
 
-        returns
-        np.ndarray; coef c s.t. sum(c_i*T_i(x)) interpolates at nodes            
-                  w/ shape (n_dofs,)
+        Returns:
+            a np.ndarray, coef c s.t. sum(c_i*T_i(x)) interpolates at nodes w/ shape (n_dofs,)
 
-        raises ValueError
-               if number of nodes does not match n_dofs, or if matrix is singular
+        Raises ValueError:
+            if number of nodes does not match n_dofs, or if matrix is singular
         """
 
         x_nodes = np.asarray(x_nodes)
@@ -115,20 +113,20 @@ class ChebyshevBasis(PolynomialBasis):
 
     def evaluate(self, coef: np.ndarray, x: np.ndarray) -> np.ndarray:
         """
-        evaluate the series sum(c_i*T_i(x))
+        Evaluate the series sum(c_i*T_i(x))
 
-        using vectorized operations: evaluates all basis functions at all
+        Using vectorized operations: evaluates all basis functions at all
         points simultaneously, then sums with coefficients
 
-        parameters
-        1. coef: np.ndarray; coefficients c_0, c_1, ..., c_{n_dofs-1}
-        2. x: np.ndarray; pts at which to evaluate the polynomial
+        Args:
+            coef (np.ndarray): coefficients c_0, c_1, ..., c_{n_dofs-1}
+            x (np.ndarray): pts at which to evaluate the polynomial
 
-        returns
-        np.ndarray; the evaluated polynomial values, same shape as x
+        Returns:
+            a np.ndarray, the evaluated polynomial values, same shape as x
 
-        raises ValueError
-               if number of coefficients does not match n_dofs
+        Raises ValueError:
+            if number of coefficients does not match n_dofs
         """
         if len(coef) != self.n_dofs:
             raise ValueError(
@@ -149,21 +147,21 @@ class ChebyshevBasis(PolynomialBasis):
 
     def chebyshev_nodes(self, n: int, kind: str = "roots") -> np.ndarray:
         """
-        generate Chebyshev nodes on [-1, 1]
+        Generate Chebyshev nodes on [-1, 1]
 
-        parameters
-        1. n: int; number of nodes to generate
-        2. kind: str, optional
+        Args:
+            n (int): number of nodes to generate
+            kind (str): optional
                  type of Chebyshev nodes:
                   - "roots": Chebyshev points of the 1st kind (roots of T_n)
                   - "extrema": Chebyshev points of the 2nd kind
                  default is "roots"
 
-        returns
-        np.ndarray; array of n Chebyshev nodes in [-1, 1]
+        Returns:
+            a np.ndarray, array of n Chebyshev nodes in [-1, 1]
 
-        raises ValueError
-               if n <= 0 or kind is invalid
+        Raises ValueError:
+            if n <= 0 or kind is invalid
         """
         if n <= 0:
             raise ValueError(f"number of nodes n must be positive, got {n}")
